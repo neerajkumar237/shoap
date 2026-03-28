@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "neerajsuthar680@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    // Products
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Orders
+    match /orders/{orderId} {
+      allow create: if true; // Customers can place orders
+      allow read, update, delete: if isAdmin(); // Only owner can see orders
+    }
+  }
+}
