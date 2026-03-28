@@ -76,16 +76,6 @@ interface Order {
 
 // --- Components ---
 
-const TopBanner = () => (
-  <motion.div 
-    initial={{ y: -40 }}
-    animate={{ y: 0 }}
-    className="bg-orange-600 text-white py-2 px-4 text-center text-xs font-bold tracking-widest uppercase relative z-[60]"
-  >
-    Free shipping on all orders over ₹999 in Sumerpur! 🚚
-  </motion.div>
-);
-
 const Navbar = ({ 
   cartCount, 
   onOpenCart, 
@@ -616,7 +606,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-zinc-950 font-sans text-zinc-100 relative">
-      <TopBanner />
       
       {/* Background Image with Overlay */}
       <div className="fixed inset-0 z-0 pointer-events-none">
