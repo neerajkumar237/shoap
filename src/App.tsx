@@ -539,7 +539,12 @@ export default function App() {
   // Auth state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
+      if (u && u.email !== 'neerajsuthar680@gmail.com') {
+        signOut(auth);
+        setUser(null);
+      } else {
+        setUser(u);
+      }
       setLoading(false);
     });
     return unsubscribe;
