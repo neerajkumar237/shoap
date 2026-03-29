@@ -1044,6 +1044,8 @@ const LoginModal = ({ onClose, onSuccess }: { onClose: () => void; onSuccess: ()
         setError('Popup blocked! Please allow popups for this site.');
       } else if (err.code === 'auth/unauthorized-domain') {
         setError('This domain is not authorized in Firebase. Please add it to authorized domains.');
+      } else if (err.code === 'auth/network-request-failed') {
+        setError('Network error! Please check your internet connection, disable VPN/Ad-blockers, or try a different browser (Chrome is recommended).');
       } else {
         setError(`Login failed: ${err.message || 'Please try again.'}`);
       }
