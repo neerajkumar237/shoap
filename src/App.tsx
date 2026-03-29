@@ -539,11 +539,17 @@ export default function App() {
   // Auth state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
-      if (u && u.email !== 'neerajsuthar680@gmail.com') {
-        signOut(auth);
-        setUser(null);
+      if (u) {
+        const email = u.email?.toLowerCase();
+        if (email === 'neerajsuthar680@gmail.com') {
+          setUser(u);
+        } else {
+          console.warn('Unauthorized login attempt:', email);
+          signOut(auth);
+          setUser(null);
+        }
       } else {
-        setUser(u);
+        setUser(null);
       }
       setLoading(false);
     });
@@ -1022,15 +1028,25 @@ const LoginModal = ({ onClose, onSuccess }: { onClose: () => void; onSuccess: ()
     setError('');
     try {
       const provider = new GoogleAuthProvider();
+      // Ensure we always use the latest config
       const result = await signInWithPopup(auth, provider);
-      if (result.user.email === 'neerajsuthar680@gmail.com') {
+      const email = result.user.email?.toLowerCase();
+      
+      if (email === 'neerajsuthar680@gmail.com') {
         onSuccess();
       } else {
         await signOut(auth);
-        setError('Unauthorized. Only the owner can access the dashboard.');
+        setError(`Unauthorized: ${email} is not the owner email.`);
       }
     } catch (err: any) {
-      setError('Login failed. Please try again.');
+      console.error('Login error:', err);
+      if (err.code === 'auth/popup-blocked') {
+        setError('Popup blocked! Please allow popups for this site.');
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setError('This domain is not authorized in Firebase. Please add it to authorized domains.');
+      } else {
+        setError(`Login failed: ${err.message || 'Please try again.'}`);
+      }
     } finally {
       setLoading(false);
     }
